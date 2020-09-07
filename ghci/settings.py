@@ -64,10 +64,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'agent.context_processors.sidebar',
             ],
         },
     },
 ]
+
+AUTH_USER_MODEL = 'agent.User'
 
 WSGI_APPLICATION = 'ghci.wsgi.application'
 
