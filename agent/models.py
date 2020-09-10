@@ -1,7 +1,10 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 class MyAccountManager(BaseUserManager):
+    use_in_migrations = True
     def create_user(self, email, mobile, name, password=None):
         if not email:
             raise ValueError('Users must have an email address')
@@ -16,7 +19,7 @@ class MyAccountManager(BaseUserManager):
             name=name,
         )
 
-        user.set_password(password)
+        user.password = make_password(password)
         user.save(using=self._db)
         return user
 
@@ -110,3 +113,39 @@ class Category(models.Model):
     def __str__(self): 
         return self.name
 
+
+class Order(models.Model):
+    order_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey('User', on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    shipping =  models.ForeignKey('Shipping_Address', on_delete=models.SET_NULL, null = True)
+    transaction_id = models.CharField(null = True, max_length = 50)
+    totalamt = models.IntegerField(default=None, null=True)
+    trans_mode = models.CharField(max_length=30, default=None, null=True)
+    coupon = models.ForeignKey('Coupon_Dis', on_delete=models.PROTECT, default=None, null=True)
+    
+    # def __str__(self): 
+    #     return self.order_id
+
+class Coupon_Dis(models.Model):
+    coupon_id = models.AutoField(primary_key=True)
+    coupon_code = models.CharField(max_length=50)
+    discount_percent = models.PositiveIntegerField(default=0,validators=[MinValueValidator(1),MaxValueValidator(100)])
+    
+class Order_item(models.Model):
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    prod_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default = 1)
+
+    # def __str__(self): 
+    #     return self.prod_id
+
+class Shipping_Address(models.Model):
+    user_id = models.ForeignKey('User', on_delete=models.CASCADE)
+    full_name = models.CharField(max_length = 50)
+    mobile = models.CharField(max_length=12) 
+    pincode = models.CharField(max_length = 6) 
+    address = models.CharField(max_length = 300)
+    city = models.CharField(max_length = 100) 
+    state = models.CharField(max_length = 100)
+    date_added = models.DateTimeField(auto_now_add = True)

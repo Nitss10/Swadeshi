@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 # Register your models here.
-from .models import Agent, User
+from .models import Agent, User, Category
 
 class BaseUserAdmin(UserAdmin):
     list_display = ('email', 'is_admin')
@@ -14,3 +14,4 @@ class BaseUserAdmin(UserAdmin):
 
 admin.site.register(User, BaseUserAdmin)
 admin.site.register(Agent)
+admin.site.register(Category)

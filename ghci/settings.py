@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'agent.context_processors.sidebar',
+                'agent.context_processors.cart_total',
             ],
         },
     },

@@ -7,5 +7,6 @@ import agent
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('agent.urls'))
+    path('', include('agent.urls')),
+    path('agent/', include('agent.agent_urls'))
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
