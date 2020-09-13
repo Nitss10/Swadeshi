@@ -12,7 +12,12 @@ from .models import User, Product, Order, Order_item, Shipping_Address, Coupon_D
 # Create your views here.
 query_result = []
 
+# landing page
+def landing_page(request):
+    return render(request, 'landing/index.html')
 
+def contact_page(request):
+    return render(request, 'landing/contact.html')
 # ----- Login/Signup ------
 
 def login_user(request):
@@ -20,7 +25,8 @@ def login_user(request):
         email = request.POST['email']
         password = request.POST['password']
         user = authenticate(email=email, password=password)
-        if user is not None and request.user.is_customer:
+        print(user)
+        if user is not None and user.is_customer:
             login(request, user)
             return redirect('/')
         else:

@@ -65,7 +65,7 @@
                   <ul class="nav child_menu">
                     <li><a href="{% url 'manu_prodlist' manufacturer.id %}">Product List</a></li>
                     <li><a href="{% url 'manu_addprod' manufacturer.id %}">Add Product</a></li>
-                    <li><a href="index3.html">Dashboard3</a></li>
+                    <li><a href="{% url 'manu_orderlist' manufacturer.id %}">Orders</a></li>
                   </ul>
                 </li>
                 {% endfor %}

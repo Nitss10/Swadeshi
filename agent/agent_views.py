@@ -7,7 +7,9 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Agent, User, Manufacturer, Category, Product
+from django.db.models import FilteredRelation, Q
+
+from .models import Agent, User, Manufacturer, Category, Product, Order_item, Order
 from .serializer import AgentSerializer
 # Create your views here.
 
@@ -25,14 +27,14 @@ def login_agent(request):
                 return redirect('agent_dashboard')
             else:
                 messages.info(request, 'Email or password incorrect!')
-                return redirect('agent_login')
+                return redirect('agent_home')
         else:
             messages.info(request, 'Email or password incorrect!')
-            return redirect('agent_login')
+            return redirect('agent_home')
     else:
         if request.user.is_authenticated: 
             if request.user.is_agent:
-                return redirect('agent_login')
+                return redirect('agent_home')
         return render(request, 'local/loginagent.html')
     
 def logout_agent(request):
@@ -40,7 +42,7 @@ def logout_agent(request):
         logout(request)
         return redirect('/')
     else:
-        return redirect('agent_login') 
+        return redirect('agent_home') 
 
 def signup_agent(request):
     if request.method == 'POST' :
@@ -66,7 +68,7 @@ def signup_agent(request):
         return redirect('agent_dashboard')
     else:
         if request.user.is_authenticated:
-            return redirect('/')
+            return redirect('agent_dashboard')
         else:
             return render(request, 'local/signup.html') 
 
@@ -135,6 +137,36 @@ def product_list(request, manufacturer_id):
     else:
         return redirect('/')
 
+def order_list(request, manufacturer_id):
+    manufacturer = Manufacturer.objects.get(id = manufacturer_id)
+    if manufacturer and request.user.is_authenticated and request.user.is_agent:
+        products = Product.objects.values_list('id').filter(manufacturer_id = manufacturer)
+        order_items = Order_item.objects.filter(prod_id__in = products, order_id__completed = True)
+        return render(request, 'local/orderlist.html', {"orderItems": order_items})
+    else:
+        return redirect('/')
+
+# def order_list(request, manufacturer_id):
+#     manufacturer = Manufacturer.objects.get(id = manufacturer_id)
+#     if manufacturer and request.user.is_authenticated and request.user.is_agent:
+#         products = Product.objects.values('id', 'name', 'image', 'price').filter(manufacturer_id = manufacturer)
+#         product_ids = []
+#         product_list = {}
+#         for product in products:
+#             product_ids.append(product['id'])
+#             product_list[product['id']] = product
+
+#         order_items = Order_item.objects.filter(prod_id__in = product_ids, order_id__completed = True)
+#         order_list = []
+#         for item in order_items:
+#             list_item = {}
+#             list_item['product'] = product_list[item.prod_id.id]
+#             list_item['quantity'] = item.quantity
+#             order_list.append(list_item)
+
+#         return render(request, 'local/orderlist.html', {"orderItems": order_list})
+#     else:
+#         return redirect('/')
 
 
 @api_view(['GET', 'POST'])
