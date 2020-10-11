@@ -12,7 +12,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>LocalForVocal | </title>
+  <title>Swadeshi | </title>
 
   <!-- Bootstrap -->
   <link href="{% static 'local/js/vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -55,12 +55,18 @@
           <!-- sidebar menu -->
           <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
             <div class="menu_section">
-              <a href="{% url 'manu_register' %}">
-                <h3><i class="fa fa-plus"></i>Add Manufacturer</h3>
-              </a>
+              <ul class="nav side-menu">
+                <li><a href="{% url 'agent_dashboard' %}"><i class="fa fa-home"></i>Home</a>
+                </li>
+                <li><a href="{% url 'manu_register' %}">
+                  <i class="fa fa-plus"></i>Add Manufacturer
+                </a></li>
+                <li>.  </li>
+              </ul>
+              <h3>My Manufacturers</h3>
               <ul class="nav side-menu">
                 {% for manufacturer in manufacturers %}
-                <li><a><i class="fa fa-home"></i> {{manufacturer.company_name}} <span
+                <li><a><i class="fa fa-user"></i> {{manufacturer.company_name}} <span
                       class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="{% url 'manu_prodlist' manufacturer.id %}">Product List</a></li>
@@ -122,7 +128,7 @@
       <!-- footer content -->
       <footer>
         <div class="pull-right">
-          Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+          Meraki | All right reserved
         </div>
         <div class="clearfix"></div>
       </footer>

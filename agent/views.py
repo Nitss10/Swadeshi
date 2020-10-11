@@ -28,21 +28,21 @@ def login_user(request):
         print(user)
         if user is not None and user.is_customer:
             login(request, user)
-            return redirect('/')
+            return redirect('home')
         else:
             messages.info(request, 'Email password incorrect!')
-            return redirect('/login/')
+            return redirect('login')
     else:
         if request.user.is_authenticated and request.user.is_customer:
-            return redirect('/')
+            return redirect('home')
         return render(request, 'shop/login.html')
     
 def logout_user(request):
     if request.user.is_authenticated and request.user.is_customer:
         logout(request)
-        return redirect('/')
+        return redirect('home')
     else:
-        return redirect('/login') 
+        return redirect('login') 
 
 def register(request):
     if request.method == 'POST' :
@@ -132,7 +132,7 @@ def my_orders(request):
                 all_order_items.append([order, items])
         return render(request, 'shop/myorder.html', {"order_items": all_order_items, "order_id": order_id})
     else:
-        return redirect('/login')
+        return redirect('login')
 
 
 # ----- Cart ------
@@ -147,7 +147,7 @@ def cart(request):
             order_id = obj[0].order_id
         return render(request, 'shop/cart.html', {"items": items, "order_id": order_id})
     else:
-        return redirect('/login') 
+        return redirect('login') 
 
 def add_to_cart(request, prod_id):
     if request.user.is_authenticated and request.user.is_customer:
@@ -158,9 +158,9 @@ def add_to_cart(request, prod_id):
             if is_created == False:
                 order_item.quantity = order_item.quantity +1
             order_item.save()
-            return redirect('/cart/')
+            return redirect('cart')
     else:
-        return redirect('/login')
+        return redirect('login')
 
 def remove_from_cart(request, prod_id):
     if request.user.is_authenticated and request.user.is_customer:
@@ -168,9 +168,9 @@ def remove_from_cart(request, prod_id):
         obj = Order.objects.get(user_id = request.user, completed = False)
         order_item = Order_item.objects.filter(order_id = obj, prod_id = prod)
         order_item[0].delete()
-        return redirect('/cart/')
+        return redirect('cart')
     else:
-        return redirect('/login')
+        return redirect('login')
 
 def update_quantity_minus(request, orderitem_id):
     if request.user.is_authenticated and request.user.is_customer:
@@ -178,9 +178,9 @@ def update_quantity_minus(request, orderitem_id):
         if order_item and order_item[0].quantity>1:
             order_item[0].quantity = order_item[0].quantity -1
             order_item[0].save()
-        return redirect('/cart/')
+        return redirect('cart')
     else:
-        return redirect('/login')
+        return redirect('login')
 
 def update_quantity_plus(request, orderitem_id):
     if request.user.is_authenticated and request.user.is_customer:
@@ -188,9 +188,9 @@ def update_quantity_plus(request, orderitem_id):
         if order_item:
             order_item[0].quantity = order_item[0].quantity + 1
             order_item[0].save()
-        return redirect('/cart/')
+        return redirect('cart')
     else:
-        return redirect('/login')
+        return redirect('login')
 
 def apply_coupon(request):
     if request.user.is_authenticated and request.user.is_customer:
@@ -217,7 +217,7 @@ def apply_coupon(request):
         else:
             return redirect('cart')
     else:
-        return redirect('/login')
+        return redirect('login')
 
 
 # ----- Checkout ------
@@ -252,7 +252,7 @@ def payment(request):
                 return render(request, 'shop/paytm.html', {'param_dict':param_dict})
         return redirect('checkout')
     else:
-        return redirect('/login')
+        return redirect('login')
 
 @csrf_exempt
 def handlepayment(request):
@@ -305,7 +305,7 @@ def shipping_address(request):
             addresses = Shipping_Address.objects.filter(user_id= request.user)
             return render(request, 'shop/deliver.html', {"addresses": addresses})
     else:
-        return redirect('/login')
+        return redirect('login')
 
 def checkout(request):
     if request.user.is_authenticated and request.user.is_customer:
@@ -317,4 +317,4 @@ def checkout(request):
             return redirect('deliver')
         return redirect('cart')
     else:
-        return redirect('/login')
+        return redirect('login')

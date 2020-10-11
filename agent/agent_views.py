@@ -10,7 +10,6 @@ from rest_framework.response import Response
 from django.db.models import FilteredRelation, Q
 
 from .models import Agent, User, Manufacturer, Category, Product, Order_item, Order
-from .serializer import AgentSerializer
 # Create your views here.
 
 
@@ -24,7 +23,7 @@ def login_agent(request):
         if user is not None:
             if user.is_agent == True:
                 login(request, user)
-                return redirect('agent_dashboard')
+                return render(request, 'local/dashboard.html')
             else:
                 messages.info(request, 'Email or password incorrect!')
                 return redirect('agent_home')
@@ -34,13 +33,13 @@ def login_agent(request):
     else:
         if request.user.is_authenticated: 
             if request.user.is_agent:
-                return redirect('agent_home')
+                return render(request, 'local/dashboard.html')
         return render(request, 'local/loginagent.html')
     
 def logout_agent(request):
     if request.user.is_authenticated:
         logout(request)
-        return redirect('/')
+        return redirect('agent_home')
     else:
         return redirect('agent_home') 
 
@@ -116,9 +115,9 @@ def add_product(request, manufacturer_id):
             category =  Category.objects.all()
             return render(request, 'local/product.html', {"manufacturer_id": manufacturer_id, "categories": category})
         else:
-            return redirect('/') 
+            return redirect('agent_home') 
     else:
-        return redirect('/')
+        return redirect('agent_home')
 
 def product_list(request, manufacturer_id):
     manufacturer = Manufacturer.objects.get(id = manufacturer_id)
@@ -135,7 +134,7 @@ def product_list(request, manufacturer_id):
 
         return render(request, 'local/productlist.html', {"products": products})
     else:
-        return redirect('/')
+        return redirect('agent_home')
 
 def order_list(request, manufacturer_id):
     manufacturer = Manufacturer.objects.get(id = manufacturer_id)
@@ -144,46 +143,8 @@ def order_list(request, manufacturer_id):
         order_items = Order_item.objects.filter(prod_id__in = products, order_id__completed = True)
         return render(request, 'local/orderlist.html', {"orderItems": order_items})
     else:
-        return redirect('/')
+        return redirect('agent_home')
 
-# def order_list(request, manufacturer_id):
-#     manufacturer = Manufacturer.objects.get(id = manufacturer_id)
-#     if manufacturer and request.user.is_authenticated and request.user.is_agent:
-#         products = Product.objects.values('id', 'name', 'image', 'price').filter(manufacturer_id = manufacturer)
-#         product_ids = []
-#         product_list = {}
-#         for product in products:
-#             product_ids.append(product['id'])
-#             product_list[product['id']] = product
-
-#         order_items = Order_item.objects.filter(prod_id__in = product_ids, order_id__completed = True)
-#         order_list = []
-#         for item in order_items:
-#             list_item = {}
-#             list_item['product'] = product_list[item.prod_id.id]
-#             list_item['quantity'] = item.quantity
-#             order_list.append(list_item)
-
-#         return render(request, 'local/orderlist.html', {"orderItems": order_list})
-#     else:
-#         return redirect('/')
-
-
-@api_view(['GET', 'POST'])
-def agent_controller(request):
-    queryset = Agent.objects.all()
-    serializer_class = AgentSerializer
-    if request.method == 'GET':
-        agents = Agent.objects.all()
-        serializer = AgentSerializer(agents, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = AgentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def dashboard(request):
      return render(request, 'local/dashboard.html')
