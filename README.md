@@ -12,6 +12,9 @@ Customers can select items and add them to their shopping cart and place order f
 * Agent dashboard for Manufacturers - An agent can add Indian Manufacturers under him to manage there products and selling.
 Each Manufacturer under the agent is provided with 3 options - add product, view product list and view orders placed for his products. 
 
+## Sample Demonstration
+The demo can be [viewed online here](https://drive.google.com/file/d/14VfcyhJjFv_-96klyhFNFV0A-zhta-qs/view?usp=sharing).
+
 ## Getting Started
 To get started  you can simply clone this repository and install the dependencies as specified in `requirements.txt`.
 
