@@ -1,5 +1,5 @@
 # Swadeshi
-
+test
 An e-commerce application that promotes Indian manufacturers and their small startups by showcasing cutting-edge products to millions of customers.
 It does so to curb the drastic effect of unemployment that covid had on people. 
 This application provides 2 platforms:-
